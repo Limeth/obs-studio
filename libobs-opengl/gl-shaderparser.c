@@ -57,24 +57,80 @@ static inline int cmp_type(const char *name, const size_t name_len,
 static bool gl_write_type_n(struct gl_shader_parser *glsp,
 		const char *type, size_t len)
 {
+	// Float Vectors
 	if (cmp_type(type, len, "float2", 6) == 0)
 		dstr_cat(&glsp->gl_string, "vec2");
 	else if (cmp_type(type, len, "float3", 6) == 0)
 		dstr_cat(&glsp->gl_string, "vec3");
 	else if (cmp_type(type, len, "float4", 6) == 0)
 		dstr_cat(&glsp->gl_string, "vec4");
+	// Double Vectors
+	else if (cmp_type(type, len, "double2", 7) == 0)
+		dstr_cat(&glsp->gl_string, "dvec2");
+	else if (cmp_type(type, len, "double3", 7) == 0)
+		dstr_cat(&glsp->gl_string, "dvec3");
+	else if (cmp_type(type, len, "double4", 7) == 0)
+		dstr_cat(&glsp->gl_string, "dvec4");
+	// Int Vectors
 	else if (cmp_type(type, len, "int2", 4) == 0)
 		dstr_cat(&glsp->gl_string, "ivec2");
 	else if (cmp_type(type, len, "int3", 4) == 0)
 		dstr_cat(&glsp->gl_string, "ivec3");
 	else if (cmp_type(type, len, "int4", 4) == 0)
 		dstr_cat(&glsp->gl_string, "ivec4");
+	// Unsigned Int Vectors
+	else if (cmp_type(type, len, "uint2", 5) == 0)
+		dstr_cat(&glsp->gl_string, "uvec2");
+	else if (cmp_type(type, len, "uint3", 5) == 0)
+		dstr_cat(&glsp->gl_string, "uvec3");
+	else if (cmp_type(type, len, "uint4", 5) == 0)
+		dstr_cat(&glsp->gl_string, "uvec4");
+	// Bool Vectors
+	else if (cmp_type(type, len, "bool2", 5) == 0)
+		dstr_cat(&glsp->gl_string, "bvec2");
+	else if (cmp_type(type, len, "bool3", 5) == 0)
+		dstr_cat(&glsp->gl_string, "bvec3");
+	else if (cmp_type(type, len, "bool4", 5) == 0)
+		dstr_cat(&glsp->gl_string, "bvec4");
+	// Float Matrices (non-square matrices might be problematic)
+	else if (cmp_type(type, len, "float2x2", 8) == 0)
+		dstr_cat(&glsp->gl_string, "mat2x2");
+	else if (cmp_type(type, len, "float2x3", 8) == 0)
+		dstr_cat(&glsp->gl_string, "mat3x2");
+	else if (cmp_type(type, len, "float2x4", 8) == 0)
+		dstr_cat(&glsp->gl_string, "mat4x2");
+	else if (cmp_type(type, len, "float3x2", 8) == 0)
+		dstr_cat(&glsp->gl_string, "mat2x3");
 	else if (cmp_type(type, len, "float3x3", 8) == 0)
 		dstr_cat(&glsp->gl_string, "mat3x3");
 	else if (cmp_type(type, len, "float3x4", 8) == 0)
+		dstr_cat(&glsp->gl_string, "mat4x3");
+	else if (cmp_type(type, len, "float4x2", 8) == 0)
+		dstr_cat(&glsp->gl_string, "mat2x4");
+	else if (cmp_type(type, len, "float4x3", 8) == 0)
 		dstr_cat(&glsp->gl_string, "mat3x4");
 	else if (cmp_type(type, len, "float4x4", 8) == 0)
 		dstr_cat(&glsp->gl_string, "mat4x4");
+	// Double Matrices (non-square matrices might be problematic)
+	else if (cmp_type(type, len, "double2x2", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat2x2");
+	else if (cmp_type(type, len, "double2x3", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat3x2");
+	else if (cmp_type(type, len, "double2x4", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat4x2");
+	else if (cmp_type(type, len, "double3x2", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat2x3");
+	else if (cmp_type(type, len, "double3x3", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat3x3");
+	else if (cmp_type(type, len, "double3x4", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat4x3");
+	else if (cmp_type(type, len, "double4x2", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat2x4");
+	else if (cmp_type(type, len, "double4x3", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat3x4");
+	else if (cmp_type(type, len, "double4x4", 9) == 0)
+		dstr_cat(&glsp->gl_string, "dmat4x4");
+	// Opaque (not yet exhaustive)
 	else if (cmp_type(type, len, "texture2d", 9) == 0)
 		dstr_cat(&glsp->gl_string, "sampler2D");
 	else if (cmp_type(type, len, "texture3d", 9) == 0)
@@ -677,6 +733,8 @@ bool gl_shader_parse(struct gl_shader_parser *glsp,
 
 	if (success)
 		success = gl_shader_buildstring(glsp);
+
+    blog(LOG_INFO, "Transpiled shader:\n%s\n", glsp->gl_string.array);
 
 	return success;
 }
